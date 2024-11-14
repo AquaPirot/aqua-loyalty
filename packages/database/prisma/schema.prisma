@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  phone         String    @unique
+  name          String
+  passwordHash  String
+  points        Int       @default(0)
+  active        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  receipts          Receipt[]
+  rewardRedemptions RewardRedemption[]
+}
+
+model Receipt {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  amount        Decimal
+  points        Int
+  receiptNumber String    @unique
+  qrData        String
+  validated     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+model Reward {
+  id             Int       @id @default(autoincrement())
+  name           String
+  description    String?
+  pointsRequired Int
+  active         Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  redemptions    RewardRedemption[]
+}
+
+model RewardRedemption {
+  id           Int       @id @default(autoincrement())
+  userId       Int
+  rewardId     Int
+  pointsSpent  Int
+  rewardCode   String    @unique
+  used         Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  usedAt       DateTime?
+
+  user         User      @relation(fields: [userId], references: [id])
+  reward       Reward    @relation(fields: [rewardId], references: [id])
+}
