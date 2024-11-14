@@ -1,0 +1,21 @@
+{
+  "name": "aqua-loyalty",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "@turbo/gen": "^1.12.5",
+    "prettier": "^3.2.5",
+    "turbo": "^1.12.5"
+  }
+}
