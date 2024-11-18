@@ -1,4 +1,3 @@
-// src/app/admin/restaurants/page.tsx
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 
@@ -9,7 +8,7 @@ export default async function RestaurantsPage() {
     <div>
       <div className="flex justify-between mb-6">
         <h1 className="text-2xl font-bold">Restorani</h1>
-        <Button>Dodaj Restoran</Button>
+        <Button variant="outline">Dodaj Restoran</Button>
       </div>
       
       <div className="bg-white rounded-lg shadow">
@@ -29,7 +28,7 @@ export default async function RestaurantsPage() {
                 <td className="p-4">{restaurant.pib}</td>
                 <td className="p-4">{restaurant.address}</td>
                 <td className="p-4">
-                  <Button variant="outline" size="sm">Uredi</Button>
+                  <Button variant="outline">Uredi</Button>
                 </td>
               </tr>
             ))}
