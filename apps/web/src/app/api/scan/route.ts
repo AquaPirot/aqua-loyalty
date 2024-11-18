@@ -9,17 +9,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { qrData } = await req.json();
+    const { qrData, restaurantId } = await req.json();
     const pointsPerDinar = 200;
+
+    // Provera da li restoran postoji
+    const restaurant = await prisma.restaurant.findUnique({
+      where: { id: restaurantId }
+    });
+
+    if (!restaurant) {
+      return NextResponse.json({ error: 'Restaurant not found' }, { status: 404 });
+    }
 
     const receipt = await prisma.receipt.create({
       data: {
         qrData,
-        amount: 1000,
+        amount: 1000, // Ovo ćemo kasnije izvući iz QR koda
         points: Math.floor(1000 / pointsPerDinar),
         user: {
           connect: {
             email: session.user.email
+          }
+        },
+        restaurant: {
+          connect: {
+            id: restaurantId
           }
         }
       }
