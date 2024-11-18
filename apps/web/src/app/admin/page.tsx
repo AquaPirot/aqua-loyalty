@@ -1,4 +1,3 @@
-// src/app/admin/page.tsx
 import { prisma } from "@/lib/prisma";
 
 export default async function AdminPage() {
@@ -11,22 +10,22 @@ export default async function AdminPage() {
   ]);
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
       <div className="grid grid-cols-3 gap-6">
-        <StatsCard title="Korisnici" value={stats[0]} />
-        <StatsCard title="Računi" value={stats[1]} />
-        <StatsCard title="Ukupno Bodova" value={stats[2]._sum.points || 0} />
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-gray-500">Ukupno korisnika</h2>
+          <p className="text-3xl font-bold">{stats[0]}</p>
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-gray-500">Ukupno računa</h2>
+          <p className="text-3xl font-bold">{stats[1]}</p>
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-gray-500">Ukupno bodova</h2>
+          <p className="text-3xl font-bold">{stats[2]._sum.points || 0}</p>
+        </div>
       </div>
-    </div>
-  );
-}
-
-function StatsCard({ title, value }: { title: string; value: number }) {
-  return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h3 className="text-gray-500 text-sm">{title}</h3>
-      <p className="text-3xl font-bold">{value}</p>
     </div>
   );
 }

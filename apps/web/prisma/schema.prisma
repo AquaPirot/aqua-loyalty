@@ -8,8 +8,19 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String    @id @default(cuid())
+  email     String    @unique
   name      String?
-  points    Int      @default(0)
+  points    Int       @default(0)
+  receipts  Receipt[]
+}
+
+model Receipt {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  amount    Float
+  points    Int
+  qrData    String
+  createdAt DateTime @default(now())
 }
