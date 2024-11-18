@@ -1,7 +1,7 @@
 'use client';
 
 import { Html5QrcodeScanner } from 'html5-qrcode';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export function QRScanner({ onScan }: { onScan: (data: string) => void }) {
   useEffect(() => {
