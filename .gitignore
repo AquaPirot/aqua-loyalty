@@ -1,0 +1,9 @@
+node_modules
+.turbo
+dist
+.next
+build
+.env*
+.DS_Store
+*.pem
+.vercel
