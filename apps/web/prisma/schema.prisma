@@ -1,3 +1,4 @@
+// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,19 +9,54 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
-  name      String?
-  points    Int       @default(0)
-  receipts  Receipt[]
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String?
+  points       Int       @default(0)
+  receipts     Receipt[]
+  redemptions  RewardRedemption[]
+}
+
+model Restaurant {
+  id          String    @id @default(cuid())
+  name        String
+  pib         String    @unique
+  address     String?
+  pointsRatio Int       @default(200)
+  rewards     Reward[]
+  receipts    Receipt[]
 }
 
 model Receipt {
-  id        String   @id @default(cuid())
+  id            String    @id @default(cuid())
+  userId        String
+  restaurantId  String
+  user          User      @relation(fields: [userId], references: [id])
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
+  amount        Float
+  points        Int
+  qrData        String
+  createdAt     DateTime  @default(now())
+}
+
+model Reward {
+  id            String    @id @default(cuid())
+  name          String
+  description   String?
+  pointsCost    Int
+  restaurantId  String
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
+  redemptions   RewardRedemption[]
+}
+
+model RewardRedemption {
+  id        String    @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  amount    Float
-  points    Int
-  qrData    String
-  createdAt DateTime @default(now())
+  rewardId  String
+  user      User      @relation(fields: [userId], references: [id])
+  reward    Reward    @relation(fields: [rewardId], references: [id])
+  code      String    @unique
+  used      Boolean   @default(false)
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
 }
