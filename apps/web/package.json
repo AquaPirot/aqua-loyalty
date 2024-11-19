@@ -25,6 +25,12 @@
     "tailwind-merge": "^2.5.4",
     "zustand": "^5.0.1"
   },
+  "scripts": {
+    "postinstall": "prisma generate",
+    "build": "prisma generate && next build",
+    "dev": "next dev",
+    "start": "next start"
+  },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
