@@ -1,67 +1,47 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
-import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
 
-interface ScannerProps {
-  onScan: (data: string, restaurantId: string) => Promise<void>;
-  restaurantId: string;
+interface QRScannerProps {
+  onScan: (data: string) => void;
 }
 
-export function QRScanner({ onScan, restaurantId }: ScannerProps) {
-  const [scanning, setScanning] = useState(false);
-
+export function QRScanner({ onScan }: QRScannerProps) {
   useEffect(() => {
-    if (!scanning) return;
-
-    const qrScanner = new Html5QrcodeScanner(
+    const scanner = new Html5QrcodeScanner(
       'reader',
-      { fps: 10, qrbox: { width: 250, height: 250 } },
+      {
+        qrbox: {
+          width: 250,
+          height: 250,
+        },
+        fps: 10,
+      },
       false
     );
 
-    qrScanner.render(
-      async (decodedText) => {
-        try {
-          await onScan(decodedText, restaurantId);
-          qrScanner.clear();
-          setScanning(false);
-        } catch (error) {
-          console.error('Scanning failed:', error);
-        }
+    scanner.render(
+      (decodedText) => {
+        onScan(decodedText);
+        scanner.clear();
       },
       (error) => {
-        console.log(error);
+        console.error(error);
       }
     );
 
     return () => {
-      qrScanner.clear();
+      scanner.clear();
     };
-  }, [scanning, onScan, restaurantId]);
+  }, [onScan]);
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      {!scanning ? (
-        <Button 
-          onClick={() => setScanning(true)}
-          className="w-full"
-        >
-          Skeniraj Račun
-        </Button>
-      ) : (
-        <div className="space-y-4">
-          <div id="reader" className="border rounded-lg overflow-hidden" />
-          <Button 
-            onClick={() => setScanning(false)}
-            variant="outline"
-            className="w-full"
-          >
-            Otkaži
-          </Button>
-        </div>
-      )}
+    <div>
+      <div id="reader" className="mx-auto"></div>
+      <p className="text-center mt-4 text-sm text-gray-600">
+        Postavite QR kod u okvir
+      </p>
     </div>
   );
 }

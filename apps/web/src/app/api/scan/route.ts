@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
+import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
@@ -9,39 +9,38 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { qrData, restaurantId } = await req.json();
-    const pointsPerDinar = 200;
+    const { qrData } = await req.json();
+    
+    // QR Format: "RESTO-{PIB}-{IZNOS}-{DATUM}"
+    const [prefix, pib, amount] = qrData.split('-');
 
-    // Provera da li restoran postoji
-    const restaurant = await prisma.restaurant.findUnique({
-      where: { id: restaurantId }
-    });
-
-    if (!restaurant) {
-      return NextResponse.json({ error: 'Restaurant not found' }, { status: 404 });
+    if (prefix !== 'RESTO') {
+      return NextResponse.json({ error: 'Invalid QR format' }, { status: 400 });
     }
 
-    const receipt = await prisma.receipt.create({
+    const amountValue = parseFloat(amount);
+    if (isNaN(amountValue)) {
+      return NextResponse.json({ error: 'Invalid amount' }, { status: 400 });
+    }
+
+    // Bodovi: 1 bod na svakih 200 dinara
+    const pointsEarned = Math.floor(amountValue / 200);
+
+    // Update user points
+    await prisma.user.update({
+      where: { email: session.user.email },
       data: {
-        qrData,
-        amount: 1000, // Ovo ćemo kasnije izvući iz QR koda
-        points: Math.floor(1000 / pointsPerDinar),
-        user: {
-          connect: {
-            email: session.user.email
-          }
-        },
-        restaurant: {
-          connect: {
-            id: restaurantId
-          }
+        points: {
+          increment: pointsEarned
         }
       }
     });
 
-    return NextResponse.json(receipt);
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+    return NextResponse.json({ pointsEarned });
+  } catch {
+    return NextResponse.json(
+      { error: 'Error processing receipt' },
+      { status: 500 }
+    );
   }
 }
