@@ -31,7 +31,7 @@ export default function ScanPage() {
         router.push('/dashboard');
         router.refresh();
       }, 2000);
-    } catch (err) {
+    } catch (error) {
       setError('Greška pri skeniranju računa');
       setTimeout(() => setError(null), 3000);
     }
@@ -55,7 +55,7 @@ export default function ScanPage() {
 
       <QRScanner 
         onScan={handleScan}
-        restaurantId="default-restaurant-id" // Ovo ćemo kasnije dinamički postaviti
+        restaurantId="default-restaurant-id"
       />
     </div>
   );
