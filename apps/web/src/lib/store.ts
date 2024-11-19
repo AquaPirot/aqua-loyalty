@@ -1,14 +1,15 @@
-// src/lib/store.ts
 import { create } from 'zustand';
 
-interface LoyaltyStore {
+interface UserState {
   points: number;
   setPoints: (points: number) => void;
   addPoints: (points: number) => void;
+  subtractPoints: (points: number) => void;
 }
 
-export const useLoyaltyStore = create<LoyaltyStore>((set) => ({
+export const useUserStore = create<UserState>((set) => ({
   points: 0,
   setPoints: (points) => set({ points }),
   addPoints: (points) => set((state) => ({ points: state.points + points })),
+  subtractPoints: (points) => set((state) => ({ points: state.points - points })),
 }));
