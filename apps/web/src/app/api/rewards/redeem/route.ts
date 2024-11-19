@@ -9,7 +9,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { rewardName, pointsCost } = await req.json();
+    // Ovde koristimo samo pointsCost jer nam rewardName trenutno ne treba
+    const { pointsCost } = await req.json();
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email }
