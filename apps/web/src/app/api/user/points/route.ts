@@ -1,4 +1,3 @@
-// src/app/api/user/points/route.ts
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
@@ -16,7 +15,7 @@ export async function GET() {
     });
 
     return NextResponse.json({ points: user?.points || 0 });
-  } catch (error) {
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+  } catch {
+    return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }
