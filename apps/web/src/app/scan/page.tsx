@@ -31,7 +31,7 @@ export default function ScanPage() {
         router.push('/dashboard');
         router.refresh();
       }, 2000);
-    } catch (error) {
+    } catch {
       setError('Greška pri skeniranju računa');
       setTimeout(() => setError(null), 3000);
     }
