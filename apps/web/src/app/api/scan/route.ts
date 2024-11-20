@@ -12,7 +12,12 @@ export async function POST(req: Request) {
     const { qrData } = await req.json();
     
     // QR Format: "RESTO-{PIB}-{IZNOS}-{DATUM}"
-    const [prefix, _, amount] = qrData.split('-');
+    const parts = qrData.split('-');
+    if (parts[0] !== 'RESTO' || !parts[2]) {
+    return NextResponse.json({ error: 'Invalid QR format' }, { status: 400 });
+}
+
+    const amountValue = parseFloat(parts[2]);
 
     if (prefix !== 'RESTO') {
       return NextResponse.json({ error: 'Invalid QR format' }, { status: 400 });
