@@ -10,26 +10,20 @@ export async function POST(req: Request) {
     }
 
     const { qrData } = await req.json();
-    
+
     // QR Format: "RESTO-{PIB}-{IZNOS}-{DATUM}"
     const parts = qrData.split('-');
     if (parts[0] !== 'RESTO' || !parts[2]) {
-    return NextResponse.json({ error: 'Invalid QR format' }, { status: 400 });
-}
-
-    const amountValue = parseFloat(parts[2]);
-
-    if (prefix !== 'RESTO') {
       return NextResponse.json({ error: 'Invalid QR format' }, { status: 400 });
     }
 
-    const amountValue = parseFloat(amount);
-    if (isNaN(amountValue)) {
+    const amount = parseFloat(parts[2]);
+    if (isNaN(amount)) {
       return NextResponse.json({ error: 'Invalid amount' }, { status: 400 });
     }
 
     // Bodovi: 1 bod na svakih 200 dinara
-    const pointsEarned = Math.floor(amountValue / 200);
+    const pointsEarned = Math.floor(amount / 200);
 
     // Update user points
     await prisma.user.update({
